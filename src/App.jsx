@@ -1,6 +1,6 @@
 import "./App.css";
 import { Cloudinary } from "@cloudinary/url-gen";
-import AddProduct from "./components/AddProduct";
+import Shop from "./pages/Shop";
 
 function App() {
   const cld = new Cloudinary({ cloud: { cloudName: "dxsr7tutn" } });
@@ -9,7 +9,7 @@ function App() {
     <>
       <div>
         <h1>Berry Fresh</h1>
-        <AddProduct />
+        <Shop />
       </div>
     </>
   );

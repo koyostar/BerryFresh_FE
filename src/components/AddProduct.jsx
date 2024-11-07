@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 const AddProduct = () => {
   const [formData, setFormData] = useState({
@@ -9,7 +10,7 @@ const AddProduct = () => {
     category: "",
     image: null,
   });
-  const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
 
   useEffect(() => {
@@ -54,30 +55,19 @@ const AddProduct = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
+    setLoading(true);
 
     const data = new FormData();
-    data.append("name", formData.name);
-    data.append("priceInCents", formData.priceInCents);
-    data.append("initialStock", formData.initialStock);
-    data.append("origin", formData.origin);
-    data.append("category", formData.category);
-    data.append("image", formData.image);
+
+    Object.keys(formData).forEach((key) => {
+      data.append(key, formData[key]);
+    });
 
     try {
-      const response = await fetch(
-        `${process.env.VITE_API_URL}/produt/create`,
-        {
-          method: "POST",
-          body: data,
-        }
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}product/create`,
+        data
       );
-
-      if (!response.ok) {
-        throw new Error("Failed to create product");
-      }
-
-      const result = await response.json();
       alert("Product created successfully!");
       setFormData({
         name: "",
@@ -88,11 +78,11 @@ const AddProduct = () => {
         image: null,
       });
       setImagePreview(null);
-      setIsLoading(false);
+      setLoading(false);
     } catch (error) {
       console.error("Error:", error);
       alert("Error creating product. Please try again.");
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
@@ -169,8 +159,8 @@ const AddProduct = () => {
           required
         />
         <br />
-        <button type="submit" disabled={isLoading || !formData.image}>
-          {isLoading ? "Loading..." : "Create Product"}
+        <button type="submit" disabled={loading || !formData.image}>
+          {loading ? "Loading..." : "Create Product"}
         </button>
       </form>
     </div>
