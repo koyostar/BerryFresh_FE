@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import ProductCard from "../components/ProductCard";
 import axios from "axios";
 
-const Shop = () => {
+const Shop = ({ onAddToCart, toProperCase }) => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -11,7 +11,7 @@ const Shop = () => {
     const fetchProducts = async () => {
       try {
         const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}product/all`
+          `${import.meta.env.VITE_API_URL}/product/all`
         );
         setProducts(response.data);
         setLoading(false);
@@ -40,7 +40,12 @@ const Shop = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {products.length > 0 ? (
           products.map((product) => (
-            <ProductCard key={product._id} product={product} />
+            <ProductCard
+              key={product._id}
+              product={product}
+              onAddToCart={onAddToCart}
+              toProperCase={toProperCase}
+            />
           ))
         ) : (
           <p className="text-center col-span-full">No products available</p>

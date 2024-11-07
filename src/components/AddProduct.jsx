@@ -65,7 +65,7 @@ const AddProduct = () => {
 
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}product/create`,
+        `${import.meta.env.VITE_API_URL}/product/create`,
         data
       );
       alert("Product created successfully!");
