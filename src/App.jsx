@@ -9,7 +9,7 @@ import Admin from "./pages/Admin";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Payment from "./pages/Payment";
-import UserProvider from "./utilities/UserCOntext";
+import UserProvider from "./utilities/UserContext";
 import LoginForm from "./components/LoginForm";
 import SignUpForm from "./components/SignupForm";
 
