@@ -3,12 +3,12 @@ import React from "react";
 const ProductCard = ({ product, onAddToCart, toProperCase }) => {
   return (
     <div className="bg-black p-4 rounded-lg">
-      <div className="">
+      <div className="flex justify-center items-center">
         <img src={product.image} alt={product.name} className="m-2 h-48 w-48" />
       </div>
       <h3 className="font-bold">{toProperCase(product.name)}</h3>
       <p className="text-sm text-gray-500 mb-2">Origin: {product.origin}</p>
-      <p>${product.price}</p>
+      <p>${product.price.toFixed(2)}</p>
       <button
         className="bg-slate-600 rounded-md p-2 m-2 hover:bg-slate-200  hover:text-black"
         disabled={product.status === "Sold Out"}

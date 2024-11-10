@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
 
-const AddProduct = ({ handleCloseModal }) => {
+const EditProduct = ({ product, handleCloseModal, onUpdate }) => {
   const [formData, setFormData] = useState({
-    name: "",
-    price: "",
-    initialStock: "",
-    origin: "",
-    category: "",
-    image: null,
+    name: product.name,
+    price: product.price,
+    currentStock: product.currentStock,
+    origin: product.origin,
+    category: product.category,
+    image: product.image,
   });
+  const [originalFormData, setOriginalFormData] = useState({ ...formData });
   const [loading, setLoading] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
+  const [isFileValid, setIsFileValid] = useState(true);
 
   const categories = ["Daily", "Seasonal"];
 
@@ -22,6 +25,13 @@ const AddProduct = ({ handleCloseModal }) => {
       }
     };
   }, [imagePreview]);
+
+  const hasChanges = () => {
+    return (
+      JSON.stringify(formData) !== JSON.stringify(originalFormData) ||
+      !isFileValid
+    );
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -45,6 +55,7 @@ const AddProduct = ({ handleCloseModal }) => {
     const file = e.target.files[0];
     if (file) {
       if (!["image/jpeg", "image/png"].includes(file.type)) {
+        setIsFileValid(false);
         toast.error("Only JPEG and PNG files are allowed.", {
           position: "bottom-center",
           autoClose: 3000,
@@ -53,6 +64,7 @@ const AddProduct = ({ handleCloseModal }) => {
         return;
       }
       if (file.size > 2 * 1024 * 1024) {
+        setIsFileValid(false);
         toast.error("File size should be less than 2MB.", {
           position: "bottom-center",
           autoClose: 3000,
@@ -60,6 +72,7 @@ const AddProduct = ({ handleCloseModal }) => {
         });
         return;
       }
+      setIsFileValid(true);
       setFormData({
         ...formData,
         image: file,
@@ -84,44 +97,31 @@ const AddProduct = ({ handleCloseModal }) => {
     });
 
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/product/create`,
+      const response = await axios.put(
+        `${import.meta.env.VITE_API_URL}/product/${product._id}/edit`,
         data
       );
-      toast.success("Product created successfully!", {
+      toast.success("Product updated successfully!", {
         position: "bottom-center",
         autoClose: 3000,
         hideProgressBar: true,
       });
-      setFormData({
-        name: "",
-        price: "",
-        initialStock: "",
-        origin: "",
-        category: "",
-        image: null,
-      });
-      setImagePreview(null);
-      setLoading(false);
+      onUpdate();
+      handleCloseModal();
     } catch (error) {
-      console.error("Error:", error);
-      toast.error("Error creating product. Please try again.", {
+      console.error("Error updating product:", error);
+      toast.error("Error updating product. Please try again.", {
         position: "bottom-center",
         autoClose: 3000,
         hideProgressBar: true,
       });
+    } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="relative">
-      <button
-        onClick={handleCloseModal}
-        className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-md hover:bg-red-600"
-      >
-        X
-      </button>
+    <div className="relative bg-white p-6 rounded shadow-lg w-1/2">
       <h2 className="text-2xl font-bold mb-4">Add Product</h2>
 
       <form onSubmit={handleSubmit} encType="multipart/form-data">
@@ -141,7 +141,7 @@ focus:invalid:border-pink-500 focus:invalid:ring-pink-500"
         </div>
         <div className="flex justify-between">
           <div className="w-1/2 p-2">
-            <label htmlFor="name"> Price:</label>
+            <label htmlFor="price"> Price:</label>
             <input
               type="text"
               name="price"
@@ -155,12 +155,12 @@ focus:invalid:border-pink-500 focus:invalid:ring-pink-500"
             />
           </div>
           <div className="w-1/2 p-2">
-            <label htmlFor="name"> Stock:</label>
+            <label htmlFor="currentStock"> Stock:</label>
             <input
               type="number"
-              name="initialStock"
+              name="currentStock"
               placeholder="Stock"
-              value={formData.initialStock}
+              value={formData.currentStock}
               onChange={handleChange}
               required
               className="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400
@@ -171,7 +171,7 @@ focus:invalid:border-pink-500 focus:invalid:ring-pink-500"
         </div>
         <div className="flex justify-between">
           <div className="w-1/2 p-2">
-            <label htmlFor="name"> Origin:</label>
+            <label htmlFor="origin"> Origin:</label>
             <input
               type="text"
               name="origin"
@@ -185,7 +185,7 @@ focus:invalid:border-pink-500 focus:invalid:ring-pink-500"
             />
           </div>
           <div className="w-1/2 p-2">
-            <label htmlFor="name">Category:</label>
+            <label htmlFor="category">Category:</label>
             <select
               name="category"
               value={formData.category}
@@ -206,6 +206,13 @@ focus:invalid:border-pink-500 focus:invalid:ring-pink-500"
 
         <div className=" p-2">
           <label htmlFor="name">Image:</label>
+          <div className="flex justify-center items-center">
+            <img
+              src={product.image}
+              alt={product.name}
+              className="m-2 h-20 w-20"
+            />
+          </div>
 
           <input
             type="file"
@@ -221,10 +228,10 @@ focus:invalid:border-pink-500 focus:invalid:ring-pink-500"
         <div className="flex justify-between">
           <button
             type="submit"
-            disabled={loading || !formData.image}
+            disabled={loading || !isFileValid || !hasChanges()}
             className="w-1/2 bg-blue-500 text-white font-bold mt-4 mr-2 py-2 px-4 rounded hover:bg-blue-600 disabled:bg-gray-300 transition"
           >
-            {loading ? "Loading..." : "Create Product"}
+            {loading ? "Loading..." : "Save Changes"}
           </button>
           <button
             type="button"
@@ -251,4 +258,4 @@ focus:invalid:border-pink-500 focus:invalid:ring-pink-500"
   );
 };
 
-export default AddProduct;
+export default EditProduct;

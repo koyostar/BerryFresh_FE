@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const Cart = ({ cartItems, onUpdateQuantity, onRemoveItem, toProperCase }) => {
@@ -78,6 +79,11 @@ const Cart = ({ cartItems, onUpdateQuantity, onRemoveItem, toProperCase }) => {
             <h3 className="text-xl font-bold pr-4">
               Total: ${calculateTotal()}
             </h3>
+            <Link to="/payment">
+              <button className="mt-4 bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 transition">
+                Proceed to Payment
+              </button>
+            </Link>
           </div>
         </div>
       ) : (

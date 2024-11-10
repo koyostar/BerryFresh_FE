@@ -8,6 +8,10 @@ import Account from "./pages/Account";
 import Admin from "./pages/Admin";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Payment from "./pages/Payment";
+import UserProvider from "./utilities/UserCOntext";
+import LoginForm from "./components/LoginForm";
+import SignUpForm from "./components/SignupForm";
 
 function App() {
   const [cartItems, setCartItems] = useState(() => {
@@ -30,6 +34,15 @@ function App() {
     setCartItems((prevItems) => {
       const existingItem = prevItems.find((item) => item._id === product._id);
       if (existingItem) {
+        if (existingItem.quantity + 1 > product.currentStock) {
+          toast.error("Cannot add more to cart, stock limit reached", {
+            position: "bottom-center",
+            autoClose: 3000,
+            hideProgressBar: true,
+            closeOnClick: true,
+          });
+          return prevItems;
+        }
         return prevItems.map((item) =>
           item._id === product._id
             ? { ...item, quantity: item.quantity + 1 }
@@ -65,36 +78,58 @@ function App() {
   return (
     <div>
       <ToastContainer />
-      <Router>
-        <div className="w-full">
-          <h1>Berry Fresh</h1>
-          <Navbar />
-          <Routes>
-            <Route
-              path="/shop"
-              element={
-                <Shop
-                  onAddToCart={handleAddToCart}
-                  toProperCase={toProperCase}
-                />
-              }
-            />
-            <Route
-              path="/cart"
-              element={
-                <Cart
-                  cartItems={cartItems}
-                  onUpdateQuantity={handleUpdateQuantity}
-                  onRemoveItem={handleRemoveItem}
-                  toProperCase={toProperCase}
-                />
-              }
-            />
-            <Route path="/account" element={<Account />} />
-            <Route path="/admin" element={<Admin />} />
-          </Routes>
-        </div>
-      </Router>
+      <UserProvider>
+        <Router>
+          <div className="w-full">
+            <h1>Berry Fresh</h1>
+            <Navbar />
+            <Routes>
+              <Route
+                path="/shop"
+                element={
+                  <Shop
+                    onAddToCart={handleAddToCart}
+                    toProperCase={toProperCase}
+                  />
+                }
+              />
+              <Route
+                path="/cart"
+                element={
+                  <Cart
+                    cartItems={cartItems}
+                    onUpdateQuantity={handleUpdateQuantity}
+                    onRemoveItem={handleRemoveItem}
+                    toProperCase={toProperCase}
+                  />
+                }
+              />
+              <Route
+                path="/payment"
+                element={
+                  <Payment cartItems={cartItems} toProperCase={toProperCase} />
+                }
+              />
+              <Route path="/account" element={<Account />} />
+              <Route path="/login" element={<LoginForm />} />
+              <Route path="/register" element={<SignUpForm />} />
+              <Route
+                path="/admin"
+                element={<Admin toProperCase={toProperCase} />}
+              />
+              <Route
+                path="/"
+                element={
+                  <Shop
+                    onAddToCart={handleAddToCart}
+                    toProperCase={toProperCase}
+                  />
+                }
+              />
+            </Routes>
+          </div>
+        </Router>
+      </UserProvider>
     </div>
   );
 }

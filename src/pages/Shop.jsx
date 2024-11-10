@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ProductCard from "../components/ProductCard";
 import axios from "axios";
+import { SyncLoader } from "react-spinners";
 
 const Shop = ({ onAddToCart, toProperCase }) => {
   const [products, setProducts] = useState([]);
@@ -13,7 +14,12 @@ const Shop = ({ onAddToCart, toProperCase }) => {
         const response = await axios.get(
           `${import.meta.env.VITE_API_URL}/product/all`
         );
-        setProducts(response.data);
+
+        const sortedProducts = response.data.sort((a, b) =>
+          a.name.localeCompare(b.name)
+        );
+
+        setProducts(sortedProducts);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -26,7 +32,11 @@ const Shop = ({ onAddToCart, toProperCase }) => {
   }, []);
 
   if (loading) {
-    return <div className="spinner">Loading...</div>;
+    return (
+      <div>
+        <SyncLoader />
+      </div>
+    );
   }
 
   if (error) {
