@@ -11,7 +11,7 @@ Berry Fresh serves as a Point of Sales (POS) system for an online fruit store, c
   - [Frontend Repository](https://github.com/koyostar/BerryFresh_FE)
   - [Backend Repository](https://github.com/koyostar/BerryFresh_BE)
  
-![Alt text](https://res.cloudinary.com/dxsr7tutn/image/upload/v1731280712/Screenshot_2024-11-11_at_06.29.58_raxuwf.png)
+![Alt text](https://res.cloudinary.com/dxsr7tutn/image/upload/v1731281075/Screenshot_2024-11-11_at_06.29.58_raxuwf.png)
 
 ## User Stories Implemented
 
