@@ -43,23 +43,12 @@ Berry Fresh serves as a Point of Sales (POS) system for an online fruit store, c
   - As an owner, I do not want my customers to be able to see the whole store's order history, or amend my stocks, or perform any actions that should only be available for me.
 
 
-
-
 ## Technical Stack
 - **Front End**: React.js with Vite for development and Tailwind CSS for styling.
 - **Back End**: Node.js with Express.js for server-side logic.
 - **Databases**: MongoDB for storing fruit data, user information, and orders. Cloudinary for image uploading storage.
 - **Deployment**: Front end deployed on Vercel, back end deployed on Render.
 
-
-## Design Decisions
-- **Framework Choice**: React was chosen for the front end due to its modular component-based architecture, making it ideal for building interactive UIs. Node.js and Express.js were used for the backend to facilitate a lightweight and efficient API server.
-- **Database**: MongoDB was selected for its flexibility in handling document-based data, simplifying the representation of product and order data.
-- **Mobile Responsiveness**: Ensured through responsive CSS design, enabling users to shop comfortably on various devices.
-
-## Challenges and Solutions
-- **Learning Curve**: Familiarizing with MongoDB for backend data management posed a challenge, which was overcome by studying documentation and examples.
-- **State Management**: Managing state in the cart component required careful handling to ensure consistent updates, resolved using React's `useState` and `useEffect` hooks.
 
 ## Future Improvements
 - Implementing advanced analytics for sales performance.
