@@ -34,15 +34,15 @@ const AvatarMenu = () => {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg">
-          <ul className="text-gray-700">
+        <div className="font-roboto absolute right-0 bg-white border border-gray-200 rounded-lg shadow-lg text-base text-nowrap">
+          <ul className="text-gray-700 p-4">
             {user ? (
               <>
-                <h3>Hi {user.name}</h3>
-                <li className="p-2 hover:bg-gray-100">
-                  <Link to="/account">Account</Link>
+                <h3 className="mb-2">Hi {user.name}</h3>
+                <li className="text-sm p-2 rounded-md  hover:bg-amber-500 hover:text-yellow-100">
+                  <Link to="/account">My Account</Link>
                 </li>
-                <li className="p-2 hover:bg-gray-100">
+                <li className="text-sm p-2 rounded-md hover:bg-amber-500 hover:text-yellow-100">
                   <button
                     onClick={() => {
                       logout();
@@ -56,10 +56,10 @@ const AvatarMenu = () => {
               </>
             ) : (
               <>
-                <li className="p-2 hover:bg-gray-100">
+                <li className="text-sm p-2 rounded-md hover:bg-amber-500 hover:text-yellow-100">
                   <Link to="/login">Login</Link>
                 </li>
-                <li className="p-2 hover:bg-gray-100">
+                <li className="text-sm p-2 rounded-md hover:bg-amber-500 hover:text-yellow-100">
                   <Link to="/register">Sign Up</Link>
                 </li>
               </>

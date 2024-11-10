@@ -34,7 +34,7 @@ const LoginForm = () => {
     <div className="mt-4">
       <form
         onSubmit={handleLogin}
-        className="max-w-sm mx-auto bg-white text-black p-6 shadow-md rounded"
+        className="max-w-sm mx-auto bg-amber-100 p-6 shadow-md rounded-lg"
       >
         <h2 className="text-2xl font-bold mb-4">Login</h2>
         {error && <p className="text-red-500">{error}</p>}
@@ -62,7 +62,7 @@ focus:invalid:border-pink-500 focus:invalid:ring-pink-500"
         <button
           type="submit"
           disabled={isLoading}
-          className="bg-blue-500 text-white font-bold mt-4 py-2 px-4 rounded hover:bg-blue-600 transition w-full"
+          className="bg-amber-500 text-white font-bold mt-4 py-2 px-4 rounded hover:bg-amber-600 transition w-full"
         >
           {isLoading ? "Logging in..." : "Login"}
         </button>

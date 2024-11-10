@@ -1,7 +1,12 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { UserContext } from "../utilities/UserContext";
+import axios from "axios";
+import { useNavigate } from "react-router";
 
-const Payment = ({ cartItems, toProperCase }) => {
+const Payment = ({ cartItems, setCartItems, toProperCase }) => {
+  const { user } = useContext(UserContext);
+  const navigate = useNavigate();
   const [shippingInfo, setShippingInfo] = useState({
     recipientName: "",
     email: "",
@@ -16,6 +21,36 @@ const Payment = ({ cartItems, toProperCase }) => {
     expiryDate: "",
     cvv: "",
   });
+
+  useEffect(() => {
+    if (user) {
+      const fetchUserInfo = async () => {
+        try {
+          const response = await axios.get(
+            `${import.meta.env.VITE_API_URL}/user/profile`,
+            {
+              headers: {
+                Authorization: `Bearer ${user.token}`,
+              },
+            }
+          );
+          const userData = response.data;
+          setShippingInfo({
+            recipientName: userData.name || "",
+            email: userData.email || "",
+            address: userData.address || "",
+            country: "Singapore",
+            postalCode: userData.postalCode || "",
+            phoneNumber: userData.phoneNumber || "",
+          });
+        } catch (error) {
+          console.error("Error fetching user info:", error);
+        }
+      };
+
+      fetchUserInfo();
+    }
+  }, [user]);
 
   const calculateTotal = () => {
     return cartItems
@@ -32,7 +67,7 @@ const Payment = ({ cartItems, toProperCase }) => {
     }
   };
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
 
     const isShippingValid = Object.values(shippingInfo).every(
@@ -58,11 +93,80 @@ const Payment = ({ cartItems, toProperCase }) => {
       });
       return;
     }
-    toast.success("Order submitted successfully!", {
-      position: "bottom-center",
-      autoClose: 3000,
-      hideProgressBar: true,
-    });
+    try {
+      if (user) {
+        await axios.put(
+          `${import.meta.env.VITE_API_URL}/user/update-profile`,
+          {
+            address: shippingInfo.address,
+            postalCode: shippingInfo.postalCode,
+            phoneNumber: shippingInfo.phoneNumber,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${user.token}`,
+            },
+          }
+        );
+      }
+
+      const orderData = {
+        user: user ? user._id : null,
+        items: cartItems.map((item) => ({
+          productId: item._id,
+          quantity: item.quantity,
+          priceAtPurchase: item.price,
+        })),
+        shippingInfo,
+        totalAmount: calculateTotal(),
+        status: "Pending",
+      };
+
+      const headers = user ? { Authorization: `Bearer ${user.token}` } : {};
+
+      await axios.post(
+        `${import.meta.env.VITE_API_URL}/order/create`,
+        orderData,
+        {
+          headers,
+        }
+      );
+
+      toast.success("Order submitted successfully!", {
+        position: "bottom-center",
+        autoClose: 3000,
+        hideProgressBar: true,
+      });
+
+      setShippingInfo({
+        recipientName: "",
+        email: "",
+        address: "",
+        country: "Singapore",
+        postalCode: "",
+        phoneNumber: "",
+      });
+      setPaymentDetails({
+        cardholderName: "",
+        cardNumber: "",
+        expiryDate: "",
+        cvv: "",
+      });
+      setCartItems([]);
+
+      if (user) {
+        navigate("/account");
+      } else {
+        navigate("/");
+      }
+    } catch (error) {
+      console.error("Error creating order:", error);
+      toast.error("Failed to submit order. Please try again.", {
+        position: "bottom-center",
+        autoClose: 3000,
+        hideProgressBar: true,
+      });
+    }
   };
 
   return (
@@ -74,6 +178,7 @@ const Payment = ({ cartItems, toProperCase }) => {
             <label className="block mb-2 font-bold">Recipient Name</label>
             <input
               type="text"
+              name="recipientName"
               placeholder="e.g. John Doe"
               required
               value={shippingInfo.recipientName}
@@ -86,6 +191,7 @@ const Payment = ({ cartItems, toProperCase }) => {
               <label className="block mb-2 font-bold">Email</label>
               <input
                 type="text"
+                name="email"
                 placeholder="e.g. johndoe@abcmail.com"
                 required
                 value={shippingInfo.email}
@@ -99,6 +205,7 @@ const Payment = ({ cartItems, toProperCase }) => {
               <label className="block mb-2 font-bold">Address</label>
               <input
                 type="text"
+                name="address"
                 placeholder="e.g. 123 Main St"
                 required
                 value={shippingInfo.address}
@@ -114,7 +221,7 @@ const Payment = ({ cartItems, toProperCase }) => {
                 <label className="block mb-2 font-bold">Country</label>
                 <input
                   type="text"
-                  defaultValue="Singapore"
+                  name="country"
                   required
                   value={shippingInfo.country}
                   onChange={(e) => handleInputChange(e, "shipping")}
@@ -127,6 +234,7 @@ const Payment = ({ cartItems, toProperCase }) => {
                 <label className="block mb-2 font-bold">Postal Code</label>
                 <input
                   type="text"
+                  name="postalCode"
                   placeholder="10001"
                   required
                   value={shippingInfo.postalCode}
@@ -143,6 +251,7 @@ const Payment = ({ cartItems, toProperCase }) => {
                 <p className="p-2">+65</p>
                 <input
                   type="text"
+                  name="phoneNumber"
                   placeholder="12345678"
                   required
                   value={shippingInfo.phoneNumber}
@@ -161,6 +270,7 @@ const Payment = ({ cartItems, toProperCase }) => {
             <label className="block mb-2 font-bold">Cardholder Name</label>
             <input
               type="text"
+              name="cardholderName"
               required
               value={paymentDetails.cardholderName}
               onChange={(e) => handleInputChange(e, "payment")}
@@ -171,6 +281,7 @@ const Payment = ({ cartItems, toProperCase }) => {
             <label className="block mb-2 font-bold">Card Number</label>
             <input
               type="text"
+              name="cardNumber"
               required
               value={paymentDetails.cardNumber}
               onChange={(e) => handleInputChange(e, "payment")}
@@ -184,6 +295,7 @@ const Payment = ({ cartItems, toProperCase }) => {
                 <label className="block mb-2 font-bold">Expiry Date</label>
                 <input
                   type="text"
+                  name="expiryDate"
                   placeholder="MM/YY"
                   required
                   value={paymentDetails.expiryDate}
@@ -197,6 +309,7 @@ const Payment = ({ cartItems, toProperCase }) => {
                 <label className="block mb-2 font-bold">CVV</label>
                 <input
                   type="text"
+                  name="cvv"
                   required
                   value={paymentDetails.cvv}
                   onChange={(e) => handleInputChange(e, "payment")}

@@ -81,7 +81,7 @@ function App() {
       <UserProvider>
         <Router>
           <div className="w-full">
-            <h1>Berry Fresh</h1>
+            <h1 className="font-bagel text-7xl text-amber-500">Berry Fresh</h1>
             <Navbar />
             <Routes>
               <Route
@@ -98,6 +98,7 @@ function App() {
                 element={
                   <Cart
                     cartItems={cartItems}
+                    setCartItems={setCartItems}
                     onUpdateQuantity={handleUpdateQuantity}
                     onRemoveItem={handleRemoveItem}
                     toProperCase={toProperCase}
@@ -107,7 +108,11 @@ function App() {
               <Route
                 path="/payment"
                 element={
-                  <Payment cartItems={cartItems} toProperCase={toProperCase} />
+                  <Payment
+                    cartItems={cartItems}
+                    setCartItems={setCartItems}
+                    toProperCase={toProperCase}
+                  />
                 }
               />
               <Route path="/account" element={<Account />} />

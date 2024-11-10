@@ -5,6 +5,7 @@ import { SyncLoader } from "react-spinners";
 import { toast } from "react-toastify";
 import EditProduct from "./EditProduct";
 import { MdEdit } from "react-icons/md";
+import AddProduct from "./AddProduct";
 
 const ProductStock = ({ toProperCase }) => {
   const { user } = useContext(UserContext);
@@ -13,6 +14,15 @@ const ProductStock = ({ toProperCase }) => {
   const [error, setError] = useState("");
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+
+  const handleOpenAddModal = () => {
+    setIsAddModalOpen(true);
+  };
+
+  const handleCloseAddModal = () => {
+    setIsAddModalOpen(false);
+  };
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -48,7 +58,7 @@ const ProductStock = ({ toProperCase }) => {
     setIsEditModalOpen(true);
   };
 
-  const handleCloseModal = () => {
+  const handleCloseEditModal = () => {
     setIsEditModalOpen(false);
     setSelectedProduct(null);
   };
@@ -58,7 +68,11 @@ const ProductStock = ({ toProperCase }) => {
     axios
       .get(`${import.meta.env.VITE_API_URL}/product/all`)
       .then((response) => {
-        setProducts(response.data);
+        const sortedProducts = response.data.sort((a, b) =>
+          a.name.localeCompare(b.name)
+        );
+
+        setProducts(sortedProducts);
       })
       .catch((error) => {
         console.error("Error refreshing products:", error);
@@ -82,7 +96,24 @@ const ProductStock = ({ toProperCase }) => {
 
   return (
     <div className="w-full p-4">
-      <h3 className="text-2xl font-bold mb-4">Product Stock Management</h3>
+      <h3 className="text-xl font-bold text-amber-500 mb-2">
+        Stock Management
+      </h3>
+      <div>
+        <button
+          onClick={handleOpenAddModal}
+          className="bg-amber-500 text-white px-4 py-2 font-bold rounded hover:bg-amber-600 transition"
+        >
+          Add Product
+        </button>
+      </div>
+      {isAddModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+          <div className=" bg-white p-6 rounded shadow-lg w-1/2">
+            <AddProduct handleCloseAddModal={handleCloseAddModal} />
+          </div>
+        </div>
+      )}
       <div className="overflow-x-auto">
         <table className="min-w-full mt-4">
           <thead>
@@ -114,7 +145,7 @@ const ProductStock = ({ toProperCase }) => {
                 <td className="p-2">
                   <button
                     onClick={() => handleEditClick(product)}
-                    className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600"
+                    className="bg-amber-500 text-white px-2 py-1 rounded hover:bg-amber-600"
                   >
                     <MdEdit />
                   </button>
@@ -128,7 +159,7 @@ const ProductStock = ({ toProperCase }) => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
           <EditProduct
             product={selectedProduct}
-            handleCloseModal={handleCloseModal}
+            handleCloseEditModal={handleCloseEditModal}
             onUpdate={handleUpdate}
           />
         </div>

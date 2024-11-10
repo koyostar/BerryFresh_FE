@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const AddProduct = ({ handleCloseModal }) => {
+const AddProduct = ({ handleCloseAddModal }) => {
   const [formData, setFormData] = useState({
     name: "",
     price: "",
@@ -117,7 +117,7 @@ const AddProduct = ({ handleCloseModal }) => {
   return (
     <div className="relative">
       <button
-        onClick={handleCloseModal}
+        onClick={handleCloseAddModal}
         className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-md hover:bg-red-600"
       >
         X
@@ -228,7 +228,7 @@ focus:invalid:border-pink-500 focus:invalid:ring-pink-500"
           </button>
           <button
             type="button"
-            onClick={handleCloseModal}
+            onClick={handleCloseAddModal}
             className="w-1/2 bg-gray-500 text-white font-bold mt-4 ml-2 py-2 px-4 rounded hover:bg-gray-600 transition"
           >
             Cancel

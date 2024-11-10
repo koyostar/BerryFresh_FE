@@ -20,7 +20,7 @@ const SignUpForm = () => {
     }));
   };
 
-  const handleSignup = async (e) => {
+  const handleSignUp = async (e) => {
     e.preventDefault();
 
     const result = await registerUser(formData);
@@ -34,8 +34,8 @@ const SignUpForm = () => {
   return (
     <div className="mt-4">
       <form
-        onSubmit={handleSignup}
-        className="max-w-sm mx-auto bg-white text-black p-6 shadow-md rounded"
+        onSubmit={handleSignUp}
+        className="max-w-sm mx-auto bg-amber-100 p-6 shadow-md rounded-lg"
       >
         <h2 className="text-2xl font-bold mb-4">Register</h2>
         {error && <p className="text-red-500">{error}</p>}
@@ -73,7 +73,7 @@ focus:invalid:border-pink-500 focus:invalid:ring-pink-500"
         />
         <button
           type="submit"
-          className="bg-blue-500 text-white font-bold mt-4 py-2 px-4 rounded hover:bg-blue-600 transition w-full"
+          className="bg-amber-500 text-white font-bold mt-4 py-2 px-4 rounded hover:bg-amber-600 transition w-full"
         >
           Register
         </button>

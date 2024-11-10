@@ -53,7 +53,7 @@ const UsersList = () => {
 
   return (
     <div>
-      <h3 className="text-xl font-bold mb-2">All Users</h3>
+      <h3 className="text-xl font-bold text-amber-500 mb-2">All Users</h3>
       <table className="w-full table-auto border-collapse">
         <thead>
           <tr className="bg-gray-200">
