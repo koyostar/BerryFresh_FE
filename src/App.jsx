@@ -11,7 +11,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Payment from "./pages/Payment";
 import UserProvider from "./utilities/UserContext";
 import LoginForm from "./components/LoginForm";
-import SignUpForm from "./components/SignupForm";
+import SignUpForm from "./components/SignUpForm";
 
 function App() {
   const [cartItems, setCartItems] = useState(() => {
