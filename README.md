@@ -5,6 +5,7 @@ Berry Fresh serves as a Point of Sales (POS) system for an online fruit store, c
 
 ## Project Links
 - **Front-End Deployment**: [Berry Fresh Frontend](https://berry-fresh.vercel.app/)
+  (App may take a while to load as Render has slow rendering time) 
 - **Backend Deployment**: Deployed on Render
 - **GitHub Repositories**:
   - [Frontend Repository](https://github.com/koyostar/BerryFresh_FE)
